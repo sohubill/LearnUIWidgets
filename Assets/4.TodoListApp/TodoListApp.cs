@@ -1,50 +1,119 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using GFramework.UIWidgets;
+using Unity.UIWidgets.animation;
 using Unity.UIWidgets.engine;
+using Unity.UIWidgets.material;
 using Unity.UIWidgets.painting;
+using Unity.UIWidgets.ui;
 using Unity.UIWidgets.widgets;
 using UnityEngine;
+using Color = Unity.UIWidgets.ui.Color;
+//using UnityEngine;
 
 namespace LearnUIWidgets
 {
     public class TodoListApp : UIWidgetsPanel
     {
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            FontManager.instance.addFont(Resources.Load<Font>("MaterialIcons-Regular"), familyName: "Material Icons");
+        }
+        //protected virtual PageRouteFactory pageRouteBuilder
+        //{
+        //    get
+        //    {
+        //        return (RouteSettings settings, WidgetBuilder builder) =>
+        //            new PageRouteBuilder(
+        //                settings: settings,
+        //                pageBuilder: (BuildContext context, Animation<float> animation,
+        //                    Animation<float> secondaryAnimation) => builder(context)
+        //            );
+        //    }
+        //}
+        class Choice
+        {
+            public Choice(string title, IconData icon)
+            {
+                this.title = title;
+                this.icon = icon;
+            }
+
+            public readonly string title;
+            public readonly IconData icon;
+
+            public static List<Choice> choices = new List<Choice> {
+            new Choice("Car", Unity.UIWidgets.material.Icons.directions_car),
+            new Choice("Bicycle", Unity.UIWidgets.material.Icons.directions_bike),
+            new Choice("Boat", Unity.UIWidgets.material.Icons.directions_boat),
+            new Choice("Bus", Unity.UIWidgets.material.Icons.directions_bus),
+            new Choice("Train", Unity.UIWidgets.material.Icons.directions_railway),
+            new Choice("Walk", Unity.UIWidgets.material.Icons.directions_walk)
+        };
+        }
+
         protected override Widget createWidget()
         {
-            return new TodoListPage();
+
+            return new MaterialApp(
+                home: new Scaffold(
+                   appBar: new AppBar(
+                       title: GF.Text.Data("TodoList").FontSize(30).FontBold().EndText(),
+                       //leading: new Icon(Icons.home),
+                       actions: new List<Widget>()
+                        {
+                            new Icon(Icons.hd),
+                            new Icon(Icons.wc),
+                            new PopupMenuButton<Choice>(
+                            onSelected: (val)=>{Debug.Log(val.title); },
+                            itemBuilder: (BuildContext subContext) => {
+                                List<PopupMenuEntry<Choice>> popupItems = new List<PopupMenuEntry<Choice>>();
+                                for (int i = 0; i < Choice.choices.Count; i++) {
+                                    popupItems.Add(new PopupMenuItem<Choice>(
+                                        value: Choice.choices[i],
+                                        child: new Text(Choice.choices[i].title)));
+                                }
+
+                                return popupItems;
+                            }
+                        )
+                        },
+                       centerTitle: true
+                      ),
+                       drawer: new Drawer(
+                           child: GF.ListView
+                           .Child(new Divider())
+                           .Child(
+                               new ListTile(
+                                   title: GF.Text.Data("待办事项").FontSize(30).FontBold().EndText(),
+                                   leading: new Icon(Icons.list, size: 30)).OnTap(
+                                   ()=> {
+                                       ViewState.TodoListPageState = PageState.List;
+                                       ViewState.OnChange?.Invoke();
+                                       }))
+                           .Child(new Divider())
+                           .Child(
+                               new ListTile(
+                                   title: GF.Text.Data("已完成").FontBold().FontSize(30).EndText(),
+                                   leading: new Icon(Icons.list, size: 30)).OnTap(
+                                   () => {
+                                       ViewState.TodoListPageState = PageState.Finished;
+                                       ViewState.OnChange?.Invoke();
+                                   })).EndListView()),
+                        
+                        floatingActionButton: new FloatingActionButton(
+                            backgroundColor: Colors.redAccent,
+                            child: new Icon(Icons.add_alert),
+                            highlightElevation: 12f,
+                            onPressed: () => { Debug.Log("pressed"); }),
+                   body: new TodoListPage())
+                   );
+
+
         }
-        class TodoListPage : StatefulWidget
-        {
-            public override State createState()
-            {
-                return new TodoListState();
-            }
-        }
-        class TodoListState : State<TodoListPage>
-        {
-            private List<string> mTodoDatas = new List<string>
-            {
-                "Hello",
-                "Hello"
-            };
-            private Widget[] TodoViews { get => mTodoDatas.Select(data => new TodoView()).ToArray(); }
-            public override Widget build(BuildContext context)
-            {
-                return GF.ListView.Child(new GestureDetector(
-                    child: GF.Container.Child(GF.Text.Data("+").FontSize(30).EndText()).AlignmentCenter().EndContainer(),
-                    onTap:()=>
-                {
-                    setState(() =>
-                    {
-                        mTodoDatas.Add("Hello");
-                    });
-                })).
-                Children(
-               TodoViews
-            ).Padding(EdgeInsets.only(top: 50)).EndListView();
-            }
-        }
+        
     }
 }

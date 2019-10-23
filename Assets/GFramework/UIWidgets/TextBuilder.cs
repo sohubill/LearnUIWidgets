@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.UIWidgets.painting;
+using Unity.UIWidgets.ui;
 using Unity.UIWidgets.widgets;
 
 namespace GFramework.UIWidgets
@@ -9,6 +10,7 @@ namespace GFramework.UIWidgets
     {
         private string mData { get; set; }
         private int mFontSize { get; set; } = 0;
+        private FontWeight mFontWeight { get; set; }
 
         public static TextBuilder GetBuiler()
         {
@@ -24,6 +26,11 @@ namespace GFramework.UIWidgets
             mFontSize = fontSize;
             return this;
         }
+        public TextBuilder FontBold()
+        {
+            mFontWeight = FontWeight.bold;
+            return this;
+        }
         public Text EndText()
         {
             if (mFontSize==0)
@@ -32,7 +39,7 @@ namespace GFramework.UIWidgets
             }
             else
             {
-                return new Text(data: mData, style: new TextStyle(fontSize: mFontSize));
+                return new Text(data: mData, style: new TextStyle(fontSize: mFontSize,fontWeight:mFontWeight));
             }
 
         }

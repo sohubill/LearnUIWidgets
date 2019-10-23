@@ -279,6 +279,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1294640729}
   - component: {fileID: 1294640730}
+  - component: {fileID: 1294640731}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -313,6 +314,34 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1294640728}
   m_CullTransparentMesh: 0
+--- !u!114 &1294640731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1294640728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00f0153ed3facc644b5e21f9acf32acc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Texture: {fileID: 0}
+  m_UVRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  devicePixelRatioOverride: 0
 --- !u!1 &1343633097
 GameObject:
   m_ObjectHideFlags: 0
