@@ -8,7 +8,11 @@ namespace LearnUIWidgets
 {
     public  class ViewState
     {
-        public static PageState TodoListPageState { get; set; } = PageState.List;
+        public static TodoListPageMode TodoListPageState { get; set; } = TodoListPageMode.List;
         public static Action OnChange;
+    }
+    public class TodoViewState
+    {
+        public TodoListPageMode TodoListPageState { get; set; } = TodoListPageMode.List;
     }
 }

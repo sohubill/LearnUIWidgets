@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.UIWidgets.material;
 using Unity.UIWidgets.painting;
+using Unity.UIWidgets.Redux;
 using Unity.UIWidgets.widgets;
 using UnityEngine;
 
@@ -17,7 +18,7 @@ namespace LearnUIWidgets
             return new TodoListState();
         }
     }
-    public enum PageState
+    public enum TodoListPageMode
     {
         List,
         Finished
@@ -32,11 +33,9 @@ namespace LearnUIWidgets
         public override void initState()
         {
             mTodoDatas = Model.Load();
-            ViewState.OnChange += OnChange;
         }
         public override void deactivate()
         {
-            ViewState.OnChange -= OnChange;
         }
         private string mInputContent;
         private List<Todo> mTodoDatas;
@@ -47,32 +46,36 @@ namespace LearnUIWidgets
 
         public override Widget build(BuildContext context)
         {
-            if (ViewState.TodoListPageState == PageState.List)
-            {
-                return
-                    GF.ListView
-                        .Child(
-                        new TodoInputView(data =>
-                        {
-                            setState(() =>
-                            {
-                                mTodoDatas.Add(new Todo() { Content = data });
-                                Save();
-                            });
-                        }
-                        ))
-                        .Children(TodoViews)
-                        .Padding(EdgeInsets.only(top: 50))
-                        .EndListView();
-            }
-            else
-            {
-                return GF.ListView
-                        .Children(FinishedViews)
-                        .Padding(EdgeInsets.only(top: 50))
-                        .EndListView();
-            }
-
+            return new StoreConnector<TodoViewState, TodoListPageMode>(
+                converter:state=>state.TodoListPageState,
+                builder: (buildContext, viewModel, dispatcher) =>
+             {
+                 if (viewModel == TodoListPageMode.List)
+                 {
+                     return
+                         GF.ListView
+                             .Child(
+                             new TodoInputView(data =>
+                             {
+                                 setState(() =>
+                                 {
+                                     mTodoDatas.Add(new Todo() { Content = data });
+                                     Save();
+                                 });
+                             }
+                             ))
+                             .Children(TodoViews)
+                             .Padding(EdgeInsets.only(top: 50))
+                             .EndListView();
+                 }
+                 else
+                 {
+                     return GF.ListView
+                             .Children(FinishedViews)
+                             .Padding(EdgeInsets.only(top: 50))
+                             .EndListView();
+                 }
+             });
 
         }
         private Widget[] TodoViews

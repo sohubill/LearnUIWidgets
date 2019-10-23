@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using GFramework.UIWidgets;
+using Unity.UIWidgets;
 using Unity.UIWidgets.animation;
 using Unity.UIWidgets.engine;
 using Unity.UIWidgets.material;
 using Unity.UIWidgets.painting;
+using Unity.UIWidgets.Redux;
 using Unity.UIWidgets.ui;
 using Unity.UIWidgets.widgets;
 using UnityEngine;
@@ -57,8 +59,8 @@ namespace LearnUIWidgets
 
         protected override Widget createWidget()
         {
-
-            return new MaterialApp(
+            
+            var app= new MaterialApp(
                 home: new Scaffold(
                    appBar: new AppBar(
                        title: GF.Text.Data("TodoList").FontSize(30).FontBold().EndText(),
@@ -86,23 +88,28 @@ namespace LearnUIWidgets
                        drawer: new Drawer(
                            child: GF.ListView
                            .Child(new Divider())
-                           .Child(
-                               new ListTile(
-                                   title: GF.Text.Data("待办事项").FontSize(30).FontBold().EndText(),
-                                   leading: new Icon(Icons.list, size: 30)).OnTap(
-                                   ()=> {
-                                       ViewState.TodoListPageState = PageState.List;
-                                       ViewState.OnChange?.Invoke();
-                                       }))
+                           .Child(new StoreConnector<TodoViewState, object>(
+                               builder: (context, model, dispatcher) => new ListTile(
+                                       title: GF.Text.Data("待办事项").FontBold().FontSize(30).EndText(),
+                                       leading: new Icon(Icons.list, size: 30)).OnTap(
+                                       () =>
+                                       {
+                                           dispatcher.dispatch("LIST_PAGE_MODE");
+                                       }),
+                               converter: state => null)
+)
                            .Child(new Divider())
-                           .Child(
-                               new ListTile(
-                                   title: GF.Text.Data("已完成").FontBold().FontSize(30).EndText(),
-                                   leading: new Icon(Icons.list, size: 30)).OnTap(
-                                   () => {
-                                       ViewState.TodoListPageState = PageState.Finished;
-                                       ViewState.OnChange?.Invoke();
-                                   })).EndListView()),
+                           .Child(new StoreConnector<TodoViewState,object>(
+                               builder: (context,model,dispatcher)=>new ListTile(
+                                       title: GF.Text.Data("已完成").FontBold().FontSize(30).EndText(),
+                                       leading: new Icon(Icons.list, size: 30)).OnTap(
+                                       () =>
+                                       {
+                                           dispatcher.dispatch("FINISH_PAGE_MODE");
+                                       }),
+                               converter:state=>null)
+
+                                   ).EndListView()),
                         
                         floatingActionButton: new FloatingActionButton(
                             backgroundColor: Colors.redAccent,
@@ -111,8 +118,27 @@ namespace LearnUIWidgets
                             onPressed: () => { Debug.Log("pressed"); }),
                    body: new TodoListPage())
                    );
-
-
+            var store = new Store<TodoViewState>(
+                reducer:(TodoViewState previousState, object action)=> 
+                {
+                    switch (action)
+                    {
+                        case "LIST_PAGE_MODE":
+                            return new TodoViewState()
+                            {
+                                TodoListPageState = TodoListPageMode.List
+                            };
+                        case "FINISH_PAGE_MODE":
+                            return new TodoViewState()
+                            {
+                                TodoListPageState = TodoListPageMode.Finished
+                            };
+                    }
+                    return previousState;
+                },
+                initialState:new TodoViewState());
+            var provider = new StoreProvider<TodoViewState>(child:app,store:store);
+            return provider;
         }
         
     }
