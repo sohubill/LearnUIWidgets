@@ -94,7 +94,7 @@ namespace LearnUIWidgets
                                        leading: new Icon(Icons.list, size: 30)).OnTap(
                                        () =>
                                        {
-                                           dispatcher.dispatch("LIST_PAGE_MODE");
+                                           dispatcher.dispatch(new ListPageModeAction());
                                        }),
                                converter: state => null)
 )
@@ -105,7 +105,7 @@ namespace LearnUIWidgets
                                        leading: new Icon(Icons.list, size: 30)).OnTap(
                                        () =>
                                        {
-                                           dispatcher.dispatch("FINISH_PAGE_MODE");
+                                           dispatcher.dispatch(new FinishedPageModeAction());
                                        }),
                                converter:state=>null)
 
@@ -119,24 +119,12 @@ namespace LearnUIWidgets
                    body: new TodoListPage())
                    );
             var store = new Store<TodoViewState>(
-                reducer:(TodoViewState previousState, object action)=> 
+                reducer: Reducers.Reduce,
+                initialState: new TodoViewState()
                 {
-                    switch (action)
-                    {
-                        case "LIST_PAGE_MODE":
-                            return new TodoViewState()
-                            {
-                                TodoListPageState = TodoListPageMode.List
-                            };
-                        case "FINISH_PAGE_MODE":
-                            return new TodoViewState()
-                            {
-                                TodoListPageState = TodoListPageMode.Finished
-                            };
-                    }
-                    return previousState;
+                    todos = Model.Load()
                 },
-                initialState:new TodoViewState());
+                middleware:ReduxLogging.create<TodoViewState>()); 
             var provider = new StoreProvider<TodoViewState>(child:app,store:store);
             return provider;
         }

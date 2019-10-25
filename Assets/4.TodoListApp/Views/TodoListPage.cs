@@ -30,111 +30,91 @@ namespace LearnUIWidgets
         {
             setState(() => { });
         }
-        public override void initState()
-        {
-            mTodoDatas = Model.Load();
-        }
         public override void deactivate()
         {
         }
         private string mInputContent;
         private List<Todo> mTodoDatas;
-        private void Save()
-        {
-            mTodoDatas.Save();
-        }
+
 
         public override Widget build(BuildContext context)
         {
-            return new StoreConnector<TodoViewState, TodoListPageMode>(
-                converter:state=>state.TodoListPageState,
+            return new StoreConnector<TodoViewState, TodoViewState>(
+                converter:state=>state,
                 builder: (buildContext, viewModel, dispatcher) =>
              {
-                 if (viewModel == TodoListPageMode.List)
+                 if (viewModel.TodoListPageState == TodoListPageMode.List)
                  {
                      return
                          GF.ListView
                              .Child(
                              new TodoInputView(data =>
                              {
-                                 setState(() =>
-                                 {
-                                     mTodoDatas.Add(new Todo() { Content = data });
-                                     Save();
-                                 });
+                                 dispatcher.dispatch(new AddTodoAction(data));
                              }
                              ))
-                             .Children(TodoViews)
+                             .Children(TodoViews(viewModel.todos))
                              .Padding(EdgeInsets.only(top: 50))
                              .EndListView();
                  }
                  else
                  {
                      return GF.ListView
-                             .Children(FinishedViews)
+                             .Children(FinishedViews(viewModel.todos))
                              .Padding(EdgeInsets.only(top: 50))
                              .EndListView();
                  }
              });
 
         }
-        private Widget[] TodoViews
+        private Widget[] TodoViews(List<Todo> todos)
         {
-            get
+            var result = new List<Widget>();
+            foreach (var item in todos.Where(data => !data.Finished))
             {
-                var result = new List<Widget>();
-                foreach (var item in mTodoDatas.Where(data => !data.Finished))
+                result.Add(new TodoView(item,
+                onDelete: () =>
                 {
-                    result.Add(new TodoView(item,
-                    onDelete: () =>
+                    this.setState(() =>
                     {
-                        this.setState(() =>
-                        {
-                            mTodoDatas.Remove(item);
-                            Save();
-                        });
-                    },
-                    onFinish: () =>
+                        todos.Remove(item);
+                    });
+                },
+                onFinish: () =>
+                {
+                    this.setState(() =>
                     {
-                        this.setState(() =>
-                        {
-                            item.Finished = true;
-                            Save();
-                        });
-                    }));
-                    result.Add(new Divider());
-                }
-                return result.ToArray();
+                        item.Finished = true;
+                    });
+                }));
+                result.Add(new Divider());
             }
+            return result.ToArray();
         }
-        private Widget[] FinishedViews
+        private Widget[] FinishedViews(List<Todo> todos)
         {
-            get
+
+            var result = new List<Widget>();
+            foreach (var item in todos.Where(data => data.Finished))
             {
-                var result = new List<Widget>();
-                foreach (var item in mTodoDatas.Where(data => data.Finished))
+                result.Add(new TodoView(item,
+                onDelete: () =>
                 {
-                    result.Add(new TodoView(item,
-                    onDelete: () =>
+                    this.setState(() =>
                     {
-                        this.setState(() =>
-                        {
-                            mTodoDatas.Remove(item);
-                            Save();
-                        });
-                    },
-                    onFinish: () =>
+                        todos.Remove(item);
+                    });
+                },
+                onFinish: () =>
+                {
+                    this.setState(() =>
                     {
-                        this.setState(() =>
-                        {
-                            item.Finished = true;
-                            Save();
-                        });
-                    }));
-                    result.Add(new Divider());
-                }
-                return result.ToArray();
+                        item.Finished = true;
+                    });
+                }));
+                result.Add(new Divider());
             }
+            return result.ToArray();
         }
     }
 }

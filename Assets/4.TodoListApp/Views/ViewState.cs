@@ -14,5 +14,6 @@ namespace LearnUIWidgets
     public class TodoViewState
     {
         public TodoListPageMode TodoListPageState { get; set; } = TodoListPageMode.List;
+        public List<Todo> todos;
     }
 }
