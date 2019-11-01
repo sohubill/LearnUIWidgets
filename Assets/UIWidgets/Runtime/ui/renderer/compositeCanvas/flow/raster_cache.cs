@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.UIWidgets.editor;
 using Unity.UIWidgets.foundation;
 using Unity.UIWidgets.ui;
 using UnityEngine;
@@ -24,14 +25,19 @@ namespace Unity.UIWidgets.flow {
         public readonly float devicePixelRatio;
 
         public void draw(Canvas canvas) {
-            var bounds = canvas.getTotalMatrix().mapRect(this.logicalRect).roundOut(this.devicePixelRatio);
+            var boundRect = canvas.getTotalMatrix().mapRect(this.logicalRect);
+            var bounds = boundRect.withDevicePixelRatio(this.devicePixelRatio);
 
             D.assert(() => {
-                var textureWidth = Mathf.CeilToInt(bounds.width * this.devicePixelRatio);
-                var textureHeight = Mathf.CeilToInt(bounds.height * this.devicePixelRatio);
-
-                D.assert(this.image.width == textureWidth);
-                D.assert(this.image.height == textureHeight);
+                var boundsInPixel = boundRect.roundOutScale(this.devicePixelRatio);
+                var textureWidth = Mathf.CeilToInt(boundsInPixel.width);
+                var textureHeight = Mathf.CeilToInt(boundsInPixel.height);
+                
+                //it is possible that there is a minor difference between the bound size and the image size (1 pixel at
+                //most) due to the roundOut operation when calculating the bounds if the elements in the canvas transform
+                //is not all integer
+                D.assert(Mathf.Abs(this.image.width - textureWidth) <= 1);
+                D.assert(Mathf.Abs(this.image.height - textureHeight) <= 1);
                 return true;
             });
 
@@ -47,7 +53,7 @@ namespace Unity.UIWidgets.flow {
     }
 
     class _RasterCacheKey : IEquatable<_RasterCacheKey> {
-        internal _RasterCacheKey(Picture picture, Matrix3 matrix, float devicePixelRatio) {
+        internal _RasterCacheKey(Picture picture, Matrix3 matrix, float devicePixelRatio, int antiAliasing) {
             D.assert(picture != null);
             D.assert(matrix != null);
             this.picture = picture;
@@ -67,6 +73,7 @@ namespace Unity.UIWidgets.flow {
             this.matrix[2] = 0.0f;
             this.matrix[5] = 0.0f;
             this.devicePixelRatio = devicePixelRatio;
+            this.antiAliasing = antiAliasing;
         }
 
         public readonly Picture picture;
@@ -74,6 +81,8 @@ namespace Unity.UIWidgets.flow {
         public readonly Matrix3 matrix;
 
         public readonly float devicePixelRatio;
+        
+        public readonly int antiAliasing;
 
         public bool Equals(_RasterCacheKey other) {
             if (ReferenceEquals(null, other)) {
@@ -86,7 +95,8 @@ namespace Unity.UIWidgets.flow {
 
             return Equals(this.picture, other.picture) &&
                    Equals(this.matrix, other.matrix) &&
-                   this.devicePixelRatio.Equals(other.devicePixelRatio);
+                   this.devicePixelRatio.Equals(other.devicePixelRatio) &&
+                   this.antiAliasing.Equals(other.antiAliasing);
         }
 
         public override bool Equals(object obj) {
@@ -110,6 +120,7 @@ namespace Unity.UIWidgets.flow {
                 var hashCode = (this.picture != null ? this.picture.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (this.matrix != null ? this.matrix.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ this.devicePixelRatio.GetHashCode();
+                hashCode = (hashCode * 397) ^ this.antiAliasing.GetHashCode();
                 return hashCode;
             }
         }
@@ -146,7 +157,7 @@ namespace Unity.UIWidgets.flow {
         }
 
         public RasterCacheResult getPrerolledImage(
-            Picture picture, Matrix3 transform, float devicePixelRatio, bool isComplex,
+            Picture picture, Matrix3 transform, float devicePixelRatio, int antiAliasing, bool isComplex,
             bool willChange) {
             if (this.threshold == 0) {
                 return null;
@@ -160,7 +171,7 @@ namespace Unity.UIWidgets.flow {
                 return null;
             }
 
-            _RasterCacheKey cacheKey = new _RasterCacheKey(picture, transform, devicePixelRatio);
+            _RasterCacheKey cacheKey = new _RasterCacheKey(picture, transform, devicePixelRatio, antiAliasing);
 
             var entry = this._cache.putIfAbsent(cacheKey, () => new _RasterCacheEntry());
 
@@ -174,7 +185,7 @@ namespace Unity.UIWidgets.flow {
             if (entry.image == null) {
                 D.assert(this._meshPool != null);
                 entry.image =
-                    this._rasterizePicture(picture, transform, devicePixelRatio, this._meshPool);
+                    this._rasterizePicture(picture, transform, devicePixelRatio, antiAliasing, this._meshPool);
             }
 
             return entry.image;
@@ -202,6 +213,10 @@ namespace Unity.UIWidgets.flow {
                 return false;
             }
 
+            if (Window.instance.windowConfig.disableRasterCache) {
+                return false;
+            }
+            
             var bounds = picture.paintBounds;
             if (bounds.isEmpty) {
                 return false;
@@ -215,20 +230,32 @@ namespace Unity.UIWidgets.flow {
                 return false;
             }
 
+            //https://forum.unity.com/threads/rendertexture-create-failed-rendertexture-too-big.58667/
+            if (picture.paintBounds.size.width > WindowConfig.MaxRasterImageSize ||
+                picture.paintBounds.size.height > WindowConfig.MaxRasterImageSize) {
+                return false;
+            }
+
             return true;
         }
 
         RasterCacheResult _rasterizePicture(Picture picture, Matrix3 transform, float devicePixelRatio,
-            MeshPool meshPool) {
-            var bounds = transform.mapRect(picture.paintBounds).roundOut(devicePixelRatio);
+            int antiAliasing, MeshPool meshPool) {
+            var boundRect = transform.mapRect(picture.paintBounds);
+            var bounds = boundRect.withDevicePixelRatio(devicePixelRatio);
+            var boundsInPixel = boundRect.roundOutScale(devicePixelRatio);
 
             var desc = new RenderTextureDescriptor(
-                Mathf.CeilToInt((bounds.width * devicePixelRatio)),
-                Mathf.CeilToInt((bounds.height * devicePixelRatio)),
+                Mathf.CeilToInt(boundsInPixel.width),
+                Mathf.CeilToInt(boundsInPixel.height),
                 RenderTextureFormat.Default, 24) {
                 useMipMap = false,
                 autoGenerateMips = false,
             };
+            
+            if (antiAliasing != 0) {
+                desc.msaaSamples = antiAliasing;
+            }
 
             var renderTexture = new RenderTexture(desc);
             renderTexture.hideFlags = HideFlags.HideAndDontSave;

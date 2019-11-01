@@ -11,7 +11,7 @@ using Color = Unity.UIWidgets.ui.Color;
 
 namespace UIWidgetsSample.DragNDrop {
     public class UnityObjectDetectorSample : UIWidgetsEditorWindow {
-        [MenuItem("Window/UIWidgets/Tests/Drag&Drop/UnityObject Detector")]
+        [MenuItem("UIWidgetsTests/Drag&Drop/UnityObject Detector")]
         public static void ShowEditorWindow() {
             var window = GetWindow<UnityObjectDetectorSample>();
             window.titleContent.text = "UnityObject Detector Sample";
