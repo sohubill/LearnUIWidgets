@@ -56,14 +56,15 @@ namespace LearnUIWidgets
             new Choice("Walk", Unity.UIWidgets.material.Icons.directions_walk)
         };
         }
-
+        string[] asd ={"123", "1234"};
         protected override Widget createWidget()
         {
-            
+            asd.ToList().ForEach((context) => Debug.Log(context));
             var app= new MaterialApp(
                 home: new Scaffold(
                    appBar: new AppBar(
                        title: GF.Text.Data("TodoList").FontSize(30).FontBold().EndText(),
+                       
                        //leading: new Icon(Icons.home),
                        actions: new List<Widget>()
                         {

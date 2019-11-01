@@ -11,7 +11,7 @@ using Rect = UnityEngine.Rect;
 
 namespace UIWidgetsSample {
     public class CupertinoSample : UIWidgetsEditorWindow {
-        [MenuItem("Window/UIWidgets/Tests/CupertinoSample")]
+        [MenuItem("UIWidgetsTests/CupertinoSample")]
         public static void gallery() {
             GetWindow<CupertinoSample>();
         }

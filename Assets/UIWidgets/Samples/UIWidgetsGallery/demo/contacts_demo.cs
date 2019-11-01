@@ -176,7 +176,7 @@ namespace UIWidgetsGallery.gallery {
                                         fit: StackFit.expand,
                                         children: new List<Widget> {
                                             Image.asset(
-                                                "people/ali_landscape",
+                                                "ali_landscape",
                                                 fit: BoxFit.cover,
                                                 height: _appBarHeight
                                             ),
