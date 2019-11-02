@@ -153,7 +153,7 @@ namespace Unity.UIWidgets.ui {
             get { return this._physicalSize; }
         }
 
-        //public WindowConfig windowConfig = WindowConfig.defaultConfig;
+        public WindowConfig windowConfig = WindowConfig.defaultConfig;
 
         protected Size _physicalSize = Size.zero;
 
