@@ -26,12 +26,11 @@ namespace TodoProApp
                 middleware:ReduxPersistMiddleware.create<AppState>()
                 );
             return new StoreProvider<AppState>(
-                store: store,
+                store:store,
                 child: new MaterialApp(
-                    home: new Home()
+                    home:new Home()
                     )
-                )
-                ;
+                );
         }
     }
 }
