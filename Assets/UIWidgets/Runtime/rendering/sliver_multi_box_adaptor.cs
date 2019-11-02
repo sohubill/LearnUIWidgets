@@ -36,12 +36,8 @@ namespace Unity.UIWidgets.rendering {
 
         public bool keepAlive = false;
 
-        public bool keptAlive {
-            get { return this._keptAlive; }
-        }
-
         internal bool _keptAlive = false;
-        
+
         public override string ToString() {
             return $"index={this.index}; {(this.keepAlive ? "keeyAlive; " : "")}{base.ToString()}";
         }
@@ -84,7 +80,6 @@ namespace Unity.UIWidgets.rendering {
         }
 
         public override void insert(RenderBox child, RenderBox after = null) {
-            D.assert(!this._keepAliveBucket.ContainsValue(value: child));
             base.insert(child, after: after);
             D.assert(this.firstChild != null);
             D.assert(() => {

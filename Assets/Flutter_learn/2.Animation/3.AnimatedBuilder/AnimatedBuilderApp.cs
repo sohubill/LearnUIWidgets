@@ -78,7 +78,7 @@ namespace LearnUIWidgets
         {
             return new AnimatedBuilder(
                 animation: this.animation,
-                builder: (con, child) => new SizedBox(
+                builder: (con, child) => new Container(
                     child: child,
                     height: animation.value,
                     width: animation.value

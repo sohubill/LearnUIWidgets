@@ -285,8 +285,10 @@ namespace UIWidgetsSample {
     }
 
 
-    class Choice {
-        public Choice(string title, IconData icon) {
+    class Choice
+    {
+        public Choice(string title, IconData icon)
+        {
             this.title = title;
             this.icon = icon;
         }

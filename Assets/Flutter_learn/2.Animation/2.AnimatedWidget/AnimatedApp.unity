@@ -236,7 +236,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!81 &712672782
 AudioListener:
   m_ObjectHideFlags: 0
@@ -348,25 +348,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1476882404}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1606a0701a814d47858831a2cd5cc0d, type: 3}
+  m_Script: {fileID: 11500000, guid: db88e522ef98cfd47968ad3a25498194, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Texture: {fileID: 0}
-  m_UVRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
-  devicePixelRatioOverride: 0
 --- !u!222 &1476882407
 CanvasRenderer:
   m_ObjectHideFlags: 0

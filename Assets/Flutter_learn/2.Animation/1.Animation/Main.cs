@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Unity.UIWidgets.animation;
 using Unity.UIWidgets.engine;
-using Unity.UIWidgets.material;
 using Unity.UIWidgets.painting;
 using Unity.UIWidgets.scheduler;
 using Unity.UIWidgets.widgets;
@@ -37,34 +36,31 @@ namespace LearnUIWidgets
             //animation = animationController.drive(new FloatTween(begin: 0, end: 300));
             animation = new FloatTween(begin: 0, end: 300).animate(animationController);
             animation.addListener(() => { setState(()=>animationValue = animation.value); });
-            animation.addStatusListener((state) => { animationStatus = animation.status; setState(); });
-
+            animation.addStatusListener((state) => { animationStatus = animation.status; });
 
         }
         public override Widget build(BuildContext context)
         {
             return new Container(
-                child: new Column(
-                    children: new List<Widget>()
+                child:new Column(
+                    children:new List<Widget>()
                     {
                         new GestureDetector(
                             onTap: () =>
                             {
-                                setState();
                                 animationController.reset();
                                 animationController.forward();
                             },
-                            child:new Text("Start",style:new TextStyle(color:Colors.white,fontSize:30))
+                            child:new Text("Start",style:new TextStyle(fontSize:20))
                             ),
-                        new Text("State"+animationStatus.ToString(),style:new TextStyle(color:Colors.white,fontSize:30)),
-                        new Text("Value"+animationValue,style:new TextStyle(color:Colors.white,fontSize:30)),
+                        new Text("State"+animationStatus.ToString()),
+                        new Text("Value"+animationValue),
                         new Container(
                             height:animation.value,
                             width:animation.value,
                             child:Image.asset("unity-white"))
-
                     }
-                    )); 
+                    ));
         }
         public override void dispose()
         {

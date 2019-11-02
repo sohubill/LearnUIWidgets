@@ -78,7 +78,6 @@ namespace Unity.UIWidgets.painting {
             this.fontFamily = fontFamily;
             this._fontFamilyFallback = fontFamilyFallback;
             this.debugLabel = debugLabel;
-            this.foreground = foreground;
             this.background = background;
         }
 
@@ -265,7 +264,6 @@ namespace Unity.UIWidgets.painting {
                 decorationColor: decorationColor ?? this.decorationColor,
                 decorationStyle: decorationStyle ?? this.decorationStyle,
                 decorationThickness: decorationThickness ?? this.decorationThickness,
-                foreground: foreground ?? this.foreground,
                 background: background ?? this.background,
                 debugLabel: newDebugLabel
             );
