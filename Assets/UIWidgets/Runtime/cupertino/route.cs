@@ -22,27 +22,26 @@ namespace Unity.UIWidgets.cupertino {
 
         public const int _kMaxPageBackAnimationTime = 300; // Milliseconds.
 
-        public static readonly Color _kModalBarrierColor = new Color(0x6604040F);
+        public static Color _kModalBarrierColor = new Color(0x6604040F);
 
-        public static readonly TimeSpan _kModalPopupTransitionDuration = new TimeSpan(0, 0, 0, 0, 335);
+        public static TimeSpan _kModalPopupTransitionDuration = new TimeSpan(0, 0, 0, 0, 335);
 
-        public static readonly Animatable<Offset> _kRightMiddleTween = new OffsetTween(
+        public static Animatable<Offset> _kRightMiddleTween = new OffsetTween(
             begin: new Offset(1.0f, 0.0f),
             end: Offset.zero
         );
 
-        public static readonly Animatable<Offset> _kMiddleLeftTween = new OffsetTween(
+        public static Animatable<Offset> _kMiddleLeftTween = new OffsetTween(
             begin: Offset.zero,
             end: new Offset(-1.0f / 3.0f, 0.0f)
         );
 
-        public static readonly Animatable<Offset> _kBottomUpTween = new OffsetTween(
+        public static Animatable<Offset> _kBottomUpTween = new OffsetTween(
             begin: new Offset(0.0f, 1.0f),
             end: Offset.zero
         );
 
-        public static readonly DecorationTween _kGradientShadowTween = new DecorationTween(
-            begin: _CupertinoEdgeShadowDecoration.none,
+        public static DecorationTween _kGradientShadowTween = new DecorationTween(
             end: new _CupertinoEdgeShadowDecoration(
                 edgeGradient: new LinearGradient(
                     begin: new Alignment(0.9f, 0.0f),
@@ -72,7 +71,7 @@ namespace Unity.UIWidgets.cupertino {
         }
 
 
-        public static readonly Animatable<float> _dialogScaleTween = new FloatTween(begin: 1.3f, end: 1.0f)
+        public static Animatable<float> _dialogScaleTween = new FloatTween(begin: 1.3f, end: 1.0f)
             .chain(new CurveTween(curve: Curves.linearToEaseOut));
 
         public static Widget _buildCupertinoDialogTransitions(BuildContext context, Animation<float> animation,
@@ -108,8 +107,7 @@ namespace Unity.UIWidgets.cupertino {
                 barrierDismissible: false,
                 barrierColor: _kModalBarrierColor,
                 transitionDuration: new TimeSpan(0, 0, 0, 0, 250),
-                pageBuilder:
-                (BuildContext _context, Animation<float> animation, Animation<float> secondaryAnimation) => {
+                pageBuilder: (BuildContext _context, Animation<float> animation, Animation<float> secondaryAnimation) => {
                     return builder(_context);
                 },
                 transitionBuilder: _buildCupertinoDialogTransitions
@@ -129,7 +127,7 @@ namespace Unity.UIWidgets.cupertino {
 
         public readonly LinearGradient edgeGradient;
 
-        static _CupertinoEdgeShadowDecoration lerpCupertino(
+        static _CupertinoEdgeShadowDecoration lerp(
             _CupertinoEdgeShadowDecoration a,
             _CupertinoEdgeShadowDecoration b,
             float t
@@ -145,18 +143,18 @@ namespace Unity.UIWidgets.cupertino {
 
         public override Decoration lerpFrom(Decoration a, float t) {
             if (!(a is _CupertinoEdgeShadowDecoration)) {
-                return lerpCupertino(null, this, t);
+                return lerp(null, this, t);
             }
 
-            return lerpCupertino((_CupertinoEdgeShadowDecoration) a, this, t);
+            return lerp(a, this, t);
         }
 
         public override Decoration lerpTo(Decoration b, float t) {
             if (!(b is _CupertinoEdgeShadowDecoration)) {
-                return lerpCupertino(this, null, t);
+                return lerp(this, null, t);
             }
 
-            return lerpCupertino(this, (_CupertinoEdgeShadowDecoration) b, t);
+            return lerp(this, b, t);
         }
 
         public override BoxPainter createBoxPainter(VoidCallback onChanged = null) {

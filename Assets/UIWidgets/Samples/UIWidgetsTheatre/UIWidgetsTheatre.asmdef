@@ -3,7 +3,8 @@
 	"references": [
 			"Unity.UIWidgets",
 			"UIWidgetsGallery",
-			"UIWidgetsSample"],
+			"UIWidgetsSample"
+    ],
 	"includePlatforms": [],
 	"excludePlatforms": []
 }

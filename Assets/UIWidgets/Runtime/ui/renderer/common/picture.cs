@@ -170,7 +170,7 @@ namespace Unity.UIWidgets.ui {
                 case uiDrawClipRRect cmd: {
                     var state = this._getState();
 
-                    var rect = state.xform.mapRect(uiRectHelper.fromRect(cmd.rrect.outerRect).Value);
+                    var rect = state.xform.mapRect(uiRectHelper.fromRect(cmd.rrect.outerRect));
                     state.scissor = state.scissor == null ? rect : state.scissor.Value.intersect(rect);
                     this._setState(state);
                     break;
@@ -258,7 +258,7 @@ namespace Unity.UIWidgets.ui {
                 }
                 case uiDrawPicture cmd: {
                     var state = this._getState();
-                    var rect = state.xform.mapRect(uiRectHelper.fromRect(cmd.picture.paintBounds).Value);
+                    var rect = state.xform.mapRect(uiRectHelper.fromRect(cmd.picture.paintBounds));
                     this._addPaintBounds(rect);
                     break;
                 }
@@ -266,7 +266,7 @@ namespace Unity.UIWidgets.ui {
                     var state = this._getState();
                     var scale = uiXformUtils.getScale(state.xform);
                     var rect = uiRectHelper.fromRect(
-                        cmd.textBlob.Value.shiftedBoundsInText(cmd.offset.Value.dx, cmd.offset.Value.dy)).Value;
+                        cmd.textBlob.Value.shiftedBoundsInText(cmd.offset.Value.dx, cmd.offset.Value.dy));
                     rect = state.xform.mapRect(rect);
 
                     var paint = cmd.paint;

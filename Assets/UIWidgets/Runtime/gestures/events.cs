@@ -572,7 +572,6 @@ namespace Unity.UIWidgets.gestures {
     public class PointerScrollEvent : PointerSignalEvent {
         public PointerScrollEvent(
             TimeSpan timeStamp,
-            int pointer,
             PointerDeviceKind kind = PointerDeviceKind.mouse,
             int device = 0,
             Offset position = null,
@@ -580,7 +579,6 @@ namespace Unity.UIWidgets.gestures {
             : base(
                 timeStamp,
                 kind: kind,
-                pointer: pointer,
                 device: device,
                 position: position) {
             D.assert(position != null);

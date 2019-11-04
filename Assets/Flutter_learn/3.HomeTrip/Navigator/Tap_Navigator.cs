@@ -38,7 +38,7 @@ public class Tap_NavigatorState : State<Tap_Navigator>
                 ),
             bottomNavigationBar: new BottomNavigationBar(
                 currentIndex: currentIndex,
-                type: BottomNavigationBarType.shifting,
+                type: BottomNavigationBarType.fix,
                 iconSize: 40,
                 onTap: (index) =>
                  {

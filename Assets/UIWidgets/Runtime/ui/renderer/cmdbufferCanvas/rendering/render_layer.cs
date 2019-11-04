@@ -9,7 +9,6 @@ namespace Unity.UIWidgets.ui {
             public int width;
             public int height;
             public FilterMode filterMode = FilterMode.Bilinear;
-            public bool noMSAA = false;
             public uiRect layerBounds;
             public uiPaint? layerPaint;
             public readonly List<RenderCmd> draws = new List<RenderCmd>(128);
@@ -39,7 +38,6 @@ namespace Unity.UIWidgets.ui {
 
             public static RenderLayer create(int rtID = 0, int width = 0, int height = 0,
                 FilterMode filterMode = FilterMode.Bilinear,
-                bool noMSAA = false, 
                 uiRect? layerBounds = null, uiPaint? layerPaint = null, bool ignoreClip = true) {
                 D.assert(layerBounds != null);
                 var newLayer = ObjectPool<RenderLayer>.alloc();
@@ -47,7 +45,6 @@ namespace Unity.UIWidgets.ui {
                 newLayer.width = width;
                 newLayer.height = height;
                 newLayer.filterMode = filterMode;
-                newLayer.noMSAA = noMSAA;
                 newLayer.layerBounds = layerBounds.Value;
                 newLayer.layerPaint = layerPaint;
                 newLayer.ignoreClip = ignoreClip;
