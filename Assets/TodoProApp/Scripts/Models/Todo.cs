@@ -11,10 +11,17 @@ namespace TodoProApp
         Pending,
         Complete
     }
+    public enum DueDate
+    {
+        None,
+        Today,
+        Next7Day
+    }
     public class Todo
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Title { get; set; }
         public TodoStatus Status { get; set; } = TodoStatus.Pending;
+        public DueDate Deadline { get; set; }
     }
 }

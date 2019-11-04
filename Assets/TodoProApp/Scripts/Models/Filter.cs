@@ -8,12 +8,19 @@ namespace TodoProApp
 {
     public enum FilterType
     {
-        InBox,
-        Finished
+        ByStatus,
+        ByToday
+    }
+    public static class TodoStatusToTitle
+    {
+        public static string ToTitle(this TodoStatus status)
+        {
+            return status == TodoStatus.Pending ? "收件箱" : "已完成";
+        }
     }
     public class Filter
     {
-        public FilterType Type { get; } = FilterType.InBox;
+        public FilterType Type { get; } = FilterType.ByStatus;
         public string Title { get; } = "收件箱";
         public TodoStatus TodoStatus { get; } = TodoStatus.Pending;
         private Filter(FilterType type,string title,TodoStatus todoStatus)
@@ -22,13 +29,16 @@ namespace TodoProApp
             Title = title;
             Type = type;
         }
-        public static Filter ByInBox()
+        public static Filter ByStatus(TodoStatus status)
         {
-            return new Filter(FilterType.InBox, "收件箱", TodoStatus.Pending);
+
+            return new Filter(FilterType.ByStatus, status.ToTitle(), status);
         }
-        public static Filter ByFinished()
+        public static Filter ByToday()
         {
-            return new Filter(FilterType.Finished, "已完成", TodoStatus.Complete);
+            return new Filter(FilterType.ByToday, "今天", TodoStatus.Pending);
         }
+
+
     }
 }

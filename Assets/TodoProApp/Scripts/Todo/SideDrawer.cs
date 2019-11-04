@@ -27,7 +27,17 @@ namespace TodoProApp
                                     leading: new Icon(icon: Icons.inbox),
                                     onTap:()=>
                                     {
-                                        dispatcher.dispatch(new ApplyFilterAcion(Filter.ByInBox()));
+                                        dispatcher.dispatch(new ApplyFilterAcion(Filter.ByStatus(TodoStatus.Pending)));
+                                        Navigator.pop(context);
+                                    }
+                                    ),
+                                new Divider(),
+                                new ListTile(
+                                    title: new Text(data: "今天"),
+                                    leading: new Icon(icon: Icons.today),
+                                    onTap:()=>
+                                    {
+                                        dispatcher.dispatch(new ApplyFilterAcion(Filter.ByToday()));
                                         Navigator.pop(context);
                                     }
                                     ),
@@ -37,7 +47,7 @@ namespace TodoProApp
                                     leading: new Icon(icon: Icons.check),
                                     onTap:()=>
                                     {
-                                        dispatcher.dispatch(new ApplyFilterAcion(Filter.ByFinished()));
+                                        dispatcher.dispatch(new ApplyFilterAcion(Filter.ByStatus(TodoStatus.Complete)));
                                         Navigator.pop(context);
                                     }
                                     )

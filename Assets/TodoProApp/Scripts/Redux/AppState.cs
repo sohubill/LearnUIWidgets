@@ -8,7 +8,7 @@ namespace TodoProApp
 
     public class AppState:AbstractPersistState<AppState>
     {
-        public Filter Filter { get; set; } = Filter.ByInBox();
+        public Filter Filter { get; set; } = Filter.ByStatus(TodoStatus.Pending);
         public List<Todo> Todos { get; set; } = new List<Todo>();
         //public AppState()
         //{
